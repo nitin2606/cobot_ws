@@ -33,4 +33,14 @@ def generate_launch_description():
             output='screen',
             arguments=['/front_camera@sensor_msgs/msg/Image@ignition.msgs.Image']
         ),
+
+         # Bridge for /scan topic
+        Node(
+            package='ros_ign_bridge',
+            executable='parameter_bridge',
+            name='scan_bridge',
+            output='screen',
+            arguments=['/scan@sensor_msgs/msg/LaserScan@ignition.msgs.LaserScan']
+        ),
+        
     ])
