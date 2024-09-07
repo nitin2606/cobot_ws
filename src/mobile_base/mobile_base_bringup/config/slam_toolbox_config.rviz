@@ -1,0 +1,13 @@
+Displays:
+  - Map
+    Topic: /map
+    Alpha: 0.7
+  - LaserScan
+    Topic: /scan
+    Size: 0.1
+  - TF
+    Show Axes: True
+  - RobotModel
+    Robot Description: /home/knight/cobot_ws/src/mobile_base/mobile_base_description/urdf/the_bot.xacro
+Global Options:
+  Fixed Frame: map_frame
