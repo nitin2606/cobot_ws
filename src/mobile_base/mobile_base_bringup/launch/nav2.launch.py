@@ -52,7 +52,7 @@ def generate_launch_description():
         executable='map_server',
         name='map_server',
         output='screen',
-        parameters=[{'yaml_filename': os.path.join(pkg_the_bot, 'config', 'bcr_map.yaml')}],
+        parameters=[{'yaml_filename': os.path.join(pkg_the_bot, 'config', 'the_bot_map.yaml')}],
     )
 
     static_transform_publisher_node = Node(
@@ -64,7 +64,7 @@ def generate_launch_description():
     )
 
     remapper_node = Node(
-        package='bcr_bot',
+        package='mobile_base_bringup',
         executable='remapper.py',
         name='remapper',
         output='screen',

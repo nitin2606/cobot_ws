@@ -21,6 +21,10 @@ install(DIRECTORY rviz/
         DESTINATION share/${PROJECT_NAME}/rviz)
 
 
+install(PROGRAMS scripts/remapper.py
+        DESTINATION lib/${PROJECT_NAME})
+
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

@@ -22,7 +22,7 @@ def generate_launch_description():
     position_y = LaunchConfiguration("position_y")
     orientation_yaw = LaunchConfiguration("orientation_yaw")
     camera_enabled = LaunchConfiguration("camera_enabled", default=True)
-    stereo_camera_enabled = LaunchConfiguration("stereo_camera_enabled", default=False)
+    stereo_camera_enabled = LaunchConfiguration("stereo_camera_enabled", default=True)
     two_d_lidar_enabled = LaunchConfiguration("two_d_lidar_enabled", default=True)
     odometry_source = LaunchConfiguration("odometry_source")
 
