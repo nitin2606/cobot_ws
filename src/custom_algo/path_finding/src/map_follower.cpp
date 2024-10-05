@@ -7,10 +7,12 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2/LinearMath/Matrix3x3.h>
 
+#include <iostream>
+
 class MapFollower : public rclcpp::Node
 {
 public:
-    MapFollower() : Node("map_follower"), waypoint_nav_(std::make_shared<WaypointNavigation>(this->shared_from_this()))
+    MapFollower() : Node("map_follower")
     {
         // Subscribe to /map topic
         map_subscription_ = this->create_subscription<nav_msgs::msg::OccupancyGrid>(
@@ -24,6 +26,13 @@ public:
         cmd_vel_publisher_ = this->create_publisher<geometry_msgs::msg::Twist>("/the_bot/cmd_vel", 10);
     }
 
+    void initialize(){
+        waypoint_nav_ = std::make_shared<WaypointNavigation>(this->shared_from_this());
+        
+    }
+
+    
+
 private:
     rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr map_subscription_;
     rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
@@ -31,6 +40,15 @@ private:
 
     std::shared_ptr<WaypointNavigation> waypoint_nav_;  // Instance of WaypointNavigation
     bool path_available_ = false;
+
+    void printGrid(const std::vector<std::vector<int>>& grid){
+        for(const auto& row : grid){
+            for(const auto& cell : row){
+                std::cout << cell << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
 
     // Callback for /map topic
     void map_callback(const nav_msgs::msg::OccupancyGrid::SharedPtr msg)
@@ -50,27 +68,34 @@ private:
             {
                 int index = x + y * width;
                 grid[y][x] = map_data[index];
+                
             }
         }
 
         // Create a Dijkstra object and find the path
-        Dijkstra dijkstra(grid);
-        std::pair<int, int> start = {0, 0};
-        std::pair<int, int> goal = {width - 1, height - 1};
 
-        std::vector<std::pair<int, int>> path = dijkstra.find_path(start, goal);
+        printGrid(grid);
+        std::cout << std::endl;
 
-        if (!path.empty())
-        {
-            RCLCPP_INFO(this->get_logger(), "Path found!");
-            waypoint_nav_->set_path(path);  // Pass the path to the WaypointNavigation class
-            path_available_ = true;
-        }
-        else
-        {
-            RCLCPP_WARN(this->get_logger(), "No valid path found!");
-            path_available_ = false;
-        }
+
+        // Dijkstra dijkstra(grid);
+        // std::pair<int, int> start = {0, 0};
+        // std::pair<int, int> goal = {width - 1, height - 1};
+
+        // std::vector<std::pair<int, int>> path = dijkstra.find_path(start, goal);
+
+      
+        // if (!path.empty())
+        // {
+        //     RCLCPP_INFO(this->get_logger(), "Path found!");
+        //     waypoint_nav_->set_path(path);  // Pass the path to the WaypointNavigation class
+        //     path_available_ = true;
+        // }
+        // else
+        // {
+        //     RCLCPP_WARN(this->get_logger(), "No valid path found!");
+        //     path_available_ = false;
+        // }
     }
 
     // Callback for /odom topic
@@ -106,7 +131,9 @@ private:
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<MapFollower>());
+    auto node = std::make_shared<MapFollower>();
+    node->initialize();
+    rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;
 }
